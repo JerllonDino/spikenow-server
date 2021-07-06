@@ -1,5 +1,9 @@
 import { google } from "googleapis";
 import config from "../config";
+import dotenv from "dotenv";
+dotenv.config();
+
+const clientURL = process.env.CLIENT_URL;
 
 /*******************/
 /** CONFIGURATION **/
@@ -8,7 +12,7 @@ import config from "../config";
 const googleConfig = {
   clientId: config.googleCredentials.clientId,
   clientSecret: config.googleCredentials.clientSecret,
-  redirect: "http://localhost:3000",
+  redirect: clientURL,
 };
 
 /*************/
