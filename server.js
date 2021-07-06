@@ -64,6 +64,10 @@ app.use((req, res, next) => {
   }
 });
 
+app.get("/", (req, res, next) => {
+  return res.send("This is the spikeNow replica server!");
+});
+
 const server = http.createServer(app);
 
 const io = socketIO(server, {
@@ -76,7 +80,7 @@ websocket({ io });
 
 routes({ app, config });
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3001;
 
 connectToMongoose()
   .then(() => {
