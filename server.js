@@ -72,7 +72,10 @@ const server = http.createServer(app);
 
 const io = socketIO(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origins: [
+      "http://localhost:3000",
+      "https://spikenow-client.herokuapp.com/",
+    ],
   },
 });
 
