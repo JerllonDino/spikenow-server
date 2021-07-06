@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon ./server.js --exec babel-node -e js node -r"
+    "start": "nodemon ./server.js --exec babel-node -e js node -r",
+    "dev": "babel-node server.js"
   },
   "keywords": [],
   "author": "Jerllon Dino",
