@@ -5,8 +5,8 @@ const note = ({ app, config }) => {
 
   app.get("/getNotes/:userId", async (req, res, next) => {
     try {
-      const result = await NotesController.getNotes(req.params.userId);
-      return res.json(result);
+      const note = await NotesController.getNotes(req.params.userId);
+      return res.json(note);
     } catch (error) {
       return next(error);
     }
@@ -14,8 +14,7 @@ const note = ({ app, config }) => {
 
   app.get("/getNote/:noteId", async (req, res, next) => {
     try {
-      const result = await NotesController.getNote(req.params.noteId);
-      const note = await result.json();
+      const note = await NotesController.getNote(req.params.noteId);
       return res.json(note);
     } catch (error) {
       return next(error);
@@ -24,10 +23,10 @@ const note = ({ app, config }) => {
 
   app.post("/addNote", async (req, res, next) => {
     try {
-      const result = await NotesController.addNote(req.body);
+      const note = await NotesController.addNote(req.body);
       //   console.log(result);
       //   const note = await result.json();
-      return res.json(result);
+      return res.json(note);
     } catch (error) {
       return next(error);
     }
@@ -35,8 +34,16 @@ const note = ({ app, config }) => {
 
   app.post("/updateNote", async (req, res, next) => {
     try {
-      const result = await NotesController.update(req.body);
-      const note = await result.json();
+      const note = await NotesController.update(req.body.id, req.body);
+      return res.json(note);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.delete("/deleteNote/:id", async (req, res, next) => {
+    try {
+      const note = await NotesController.remove(req.params.id);
       return res.json(note);
     } catch (error) {
       return next(error);

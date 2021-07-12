@@ -3,8 +3,6 @@ import jwt from "jsonwebtoken";
 import UsersController from "../controllers/UsersController";
 
 const auth = ({ app, config }) => {
-  // const user = new UserController(config.mongodb);
-
   app.post("/google-auth", async (req, res, next) => {
     try {
       console.log(req.body.code);
@@ -32,11 +30,22 @@ const auth = ({ app, config }) => {
     }
   });
 
-  app.get("/isAuth", async (req, res, next) => {
-    if (!req.user || typeof req.user !== "undefined") {
-      return res.json(false);
-    } else {
-      return res.json(true);
+  app.get("/getOtherContacts", async (req, res, next) => {
+    try {
+      const { data } = await googleUtil.getGooglePeople(req.user.refresh_token);
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.get("/getUser", async (req, res, next) => {
+    try {
+      const { data } = await googleUtil.getUserByEmail(req.user.refresh_token);
+      console.log(data);
+      return res.json(data);
+    } catch (error) {
+      return next(error);
     }
   });
 

@@ -55,6 +55,24 @@ function getGmailApi(auth) {
   return google.gmail({ version: "v1", auth });
 }
 
+function getGoogleCalendarApi(auth) {
+  return google.calendar({ version: "v3", auth });
+}
+
+function getGoogleContactsApi(auth) {
+  return google.people({ version: "v1", auth });
+}
+
+async function getUserByEmail(token, resource) {
+  const auth = createConnection();
+  auth.setCredentials({ refresh_token: token });
+  const people = getGoogleContactsApi(auth);
+  // console.log(people);
+  return await people.people.get({
+    resourceName: resource,
+  });
+}
+
 /**********/
 /** MAIN **/
 /**********/
@@ -160,4 +178,98 @@ async function getEmailWithAuthExisting(gmail, emailId, responseFormat) {
   return { id, payload, snippet, raw };
 }
 
-export default { sendGmail, getGoogleAccountFromCode, getEmails };
+async function getGoogleEvents(token, date, endDate) {
+  const auth = createConnection();
+  auth.setCredentials({ refresh_token: token });
+  const calendar = getGoogleCalendarApi(auth);
+  return await calendar.events.list({
+    calendarId: "primary",
+    timeMax: endDate,
+    timeMin: date,
+    maxResults: 10,
+    singleEvents: true,
+    orderBy: "startTime",
+  });
+}
+
+async function saveGoogleEvent(
+  token,
+  { title, description, inviteList, eventDate, startTime, endTime, id }
+) {
+  const auth = createConnection();
+  auth.setCredentials({ refresh_token: token });
+  const calendar = getGoogleCalendarApi(auth);
+  const startDate = new Date(eventDate + " " + startTime);
+  const endDate = new Date(eventDate + " " + endTime);
+  var event = {
+    summary: title,
+    description: description,
+    start: {
+      dateTime: startDate,
+    },
+    end: {
+      dateTime: endDate,
+    },
+
+    reminders: {
+      useDefault: false,
+      overrides: [
+        { method: "email", minutes: 24 * 60 },
+        { method: "popup", minutes: 10 },
+      ],
+    },
+  };
+  if (inviteList.length > 0 && inviteList[0].email) {
+    console.log(inviteList.length);
+    event.attendees = inviteList;
+  }
+
+  if (id) {
+    console.log("updated!");
+    return await calendar.events.patch({
+      calendarId: "primary",
+      eventId: id,
+      resource: event,
+    });
+  }
+  console.log("inserted!");
+  return await calendar.events.insert({
+    auth: auth,
+    calendarId: "primary",
+    resource: event,
+  });
+}
+
+async function deleteGoogleEvent(token, id) {
+  const auth = createConnection();
+  auth.setCredentials({ refresh_token: token });
+  const calendar = getGoogleCalendarApi(auth);
+
+  return await calendar.events.delete({
+    calendarId: "primary",
+    eventId: id,
+  });
+}
+
+async function getGooglePeople(token) {
+  const auth = createConnection();
+  auth.setCredentials({ refresh_token: token });
+  const people = getGoogleContactsApi(auth);
+
+  const users = await people.otherContacts.list({
+    readMask: "metadata,names,emailAddresses",
+  });
+
+  return users;
+}
+
+export default {
+  sendGmail,
+  getGoogleAccountFromCode,
+  getEmails,
+  getGoogleEvents,
+  saveGoogleEvent,
+  deleteGoogleEvent,
+  getGooglePeople,
+  getUserByEmail,
+};

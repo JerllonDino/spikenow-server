@@ -4,28 +4,11 @@ import session from "express-session";
 import cors from "cors";
 import jsonwebtoken from "jsonwebtoken";
 import config from "./config";
-// import Sequelize from "sequelize";
 import mongoose from "mongoose";
 import socketIO from "socket.io";
-import routes from "./routes";
 import websocket from "./routes/websocket";
-
-// function connectMySQL() {
-//   const sequelize = new Sequelize(config.mysql.options);
-//   sequelize
-//     .authenticate()
-//     .then(() => {
-//       console.info("Successfully connected to MySQL");
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//       process.exit(1);
-//     });
-//   return sequelize;
-// }
-
-// const mysql = connectMySQL();
-// config.mysql.client = mysql;
+import routes from "./routes";
+import { ExpressPeerServer } from "peer";
 
 async function connectToMongoose() {
   return mongoose.connect(config.mongodb.url, {
@@ -38,6 +21,8 @@ async function connectToMongoose() {
 
 const app = express();
 const clientURL = process.env.CLIENT_URL;
+
+const server = http.createServer(app);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -82,7 +67,7 @@ app.get("/", (req, res, next) => {
   return res.send("This is the spikeNow replica server!");
 });
 
-const server = http.createServer(app);
+app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
 
 const io = socketIO(server, {
   cors: {
@@ -92,7 +77,6 @@ const io = socketIO(server, {
     ],
   },
 });
-
 websocket({ io });
 
 routes({ app, config });

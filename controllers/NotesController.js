@@ -6,8 +6,15 @@ class NoteController {
   }
 
   static async getNotesToday(userId) {
-    const today = new Date();
-    return NoteModel.find({ userId: userId, createdAt: today })
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+    return NoteModel.find({
+      userId: userId,
+      createdAt: { $gte: start, $lt: end },
+    })
       .sort({ createdAt: -1 })
       .exec();
   }
