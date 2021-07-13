@@ -151,6 +151,7 @@ async function getEmails(token, query = "", responseFormat = "metadata") {
   }
 
   const emails = await getEmails();
+  console.log(emails);
 
   return emails;
 }
@@ -169,13 +170,13 @@ async function getEmailWithAuthExisting(gmail, emailId, responseFormat) {
     ],
   });
   // console.log(res);
-  const { id, payload, snippet, raw } = res.data;
+  const { id, payload, snippet, raw, labelIds } = res.data;
   // console.log(payload);
   // let buff = new Buffer(payload.parts[0].body.data, "base64");
   // let text = buff.toString("ascii");
   // console.log(text);
   // console.log(res.data);
-  return { id, payload, snippet, raw };
+  return { id, payload, snippet, raw, labelIds };
 }
 
 async function getGoogleEvents(token, date, endDate) {
@@ -263,6 +264,51 @@ async function getGooglePeople(token) {
   return users;
 }
 
+async function changeStarEmail(token, emailId, isStarred) {
+  const auth = createConnection();
+  auth.setCredentials({ refresh_token: token });
+  const gmail = getGmailApi(auth);
+  let result = [];
+
+  if (isStarred) {
+    result = await gmail.users.messages.modify({
+      userId: "me",
+      id: emailId,
+      addLabelIds: ["STARRED"],
+    });
+  } else {
+    result = await gmail.users.messages.modify({
+      userId: "me",
+      id: emailId,
+      removeLabelIds: ["STARRED"],
+    });
+  }
+
+  const messageStarred = await getEmailWithAuthExisting(
+    gmail,
+    result.data.id,
+    "full"
+  );
+  return messageStarred;
+}
+
+async function trashEmail(token, emailId) {
+  const auth = createConnection();
+  auth.setCredentials({ refresh_token: token });
+  const gmail = getGmailApi(auth);
+  const result = await gmail.users.messages.trash({
+    userId: "me",
+    id: emailId,
+  });
+
+  const messageTrashed = await getEmailWithAuthExisting(
+    gmail,
+    result.data.id,
+    "full"
+  );
+  return messageTrashed;
+}
+
 export default {
   sendGmail,
   getGoogleAccountFromCode,
@@ -272,4 +318,6 @@ export default {
   deleteGoogleEvent,
   getGooglePeople,
   getUserByEmail,
+  changeStarEmail,
+  trashEmail,
 };

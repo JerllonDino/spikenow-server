@@ -67,7 +67,7 @@ app.get("/", (req, res, next) => {
   return res.send("This is the spikeNow replica server!");
 });
 
-app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
+// app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
 
 const io = socketIO(server, {
   cors: {

@@ -64,6 +64,33 @@ const chat = ({ app }) => {
     }
   });
 
+  app.post("/starChangeEmail", async (req, res, next) => {
+    try {
+      const result = await googleUtil.changeStarEmail(
+        req.user.refresh_token,
+        req.body.emailId,
+        req.body.isStarred
+      );
+      console.log(result);
+      return res.json(result);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.post("/trashEmail", async (req, res, next) => {
+    try {
+      const result = await googleUtil.trashEmail(
+        req.user.refresh_token,
+        req.body.emailId
+      );
+      console.log(result);
+      return res.json(result);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
   return app;
 };
 
