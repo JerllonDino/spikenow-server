@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 const GroupChat = mongoose.Schema(
   {
     name: { type: String, require: true },
-    category: { type: String },
-    creatorId: { type: String, require: true },
+    category: { type: Number },
+    creatorEmail: { type: String, require: true },
+    members: { type: Array },
   },
   {
     timestamps: true,

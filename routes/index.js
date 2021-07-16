@@ -3,6 +3,7 @@ import chat from "./chat";
 import note from "./note";
 import event from "./event";
 import todo from "./todo";
+import groupChat from "./groupChat";
 
 const routes = (utils) => {
   auth(utils);
@@ -10,6 +11,7 @@ const routes = (utils) => {
   note(utils);
   event(utils);
   todo(utils);
+  groupChat(utils);
 };
 
 export default routes;

@@ -60,6 +60,48 @@ const websocket = ({ io }) => {
         socket.broadcast.to(roomId).emit("user-disconnected", userId);
       });
     });
+
+    socket.on("join-group", ({ groupId, id, email }) => {
+      socket.handshake.auth = { id, email };
+      socket.userID = id;
+      socket.email = email;
+      socket.join(groupId);
+      const users = [];
+      for (let [id, socket] of io.of("/").sockets) {
+        const checkExisting = users.find(
+          (user) => user.userID === socket.userID
+        );
+        if (checkExisting) {
+          return;
+        }
+        users.push({
+          userID: socket.userID,
+          email: socket.email,
+        });
+      }
+      console.log("Users Group", users);
+      socket.emit("users-group", users);
+
+      // notify existing users
+      socket.broadcast.emit("user-group-connected", {
+        userID: socket.userID,
+        email: socket.email,
+      });
+
+      // forward the message to the right group
+      socket.on("group-message", ({ content, to }) => {
+        socket.to(to).emit("group-message", {
+          content,
+          from: to,
+        });
+      });
+
+      // notify users upon disconnection
+      socket.on("disconnect", () => {
+        console.log("Client Disconnected");
+        socket.broadcast.emit("user-group-disconnected", socket.userID);
+      });
+    });
   });
 };
 

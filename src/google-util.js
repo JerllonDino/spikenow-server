@@ -27,6 +27,12 @@ function createConnection() {
   );
 }
 
+/*************/
+/** CONNECTION **/
+/*************/
+
+const auth = createConnection();
+
 function makeBody(to, from, subject, message) {
   var str = [
     'Content-Type: text/html; charset="UTF-8"\n',
@@ -64,7 +70,6 @@ function getGoogleContactsApi(auth) {
 }
 
 async function getUserByEmail(token, resource) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const people = getGoogleContactsApi(auth);
   // console.log(people);
@@ -81,7 +86,6 @@ async function getUserByEmail(token, resource) {
  * Take the "code" parameter which Google gives us once when the user logs in, then get the user's email and id.
  */
 async function getGoogleAccountFromCode(code) {
-  const auth = createConnection();
   const data = await auth.getToken(code);
   const tokens = data.tokens;
 
@@ -99,7 +103,6 @@ async function getGoogleAccountFromCode(code) {
 }
 
 async function sendGmail(token, subject, message, to) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const profile = await google.oauth2("v2").userinfo.v2.me.get({ auth: auth });
 
@@ -121,7 +124,6 @@ async function sendGmail(token, subject, message, to) {
 }
 
 async function getEmails(token, query = "", responseFormat = "metadata") {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const gmail = getGmailApi(auth);
   const res = await gmail.users.messages.list({
@@ -180,7 +182,6 @@ async function getEmailWithAuthExisting(gmail, emailId, responseFormat) {
 }
 
 async function getGoogleEvents(token, date, endDate) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const calendar = getGoogleCalendarApi(auth);
   return await calendar.events.list({
@@ -197,7 +198,6 @@ async function saveGoogleEvent(
   token,
   { title, description, inviteList, eventDate, startTime, endTime, id }
 ) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const calendar = getGoogleCalendarApi(auth);
   const startDate = new Date(eventDate + " " + startTime);
@@ -242,7 +242,6 @@ async function saveGoogleEvent(
 }
 
 async function deleteGoogleEvent(token, id) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const calendar = getGoogleCalendarApi(auth);
 
@@ -253,7 +252,6 @@ async function deleteGoogleEvent(token, id) {
 }
 
 async function getGooglePeople(token) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const people = getGoogleContactsApi(auth);
 
@@ -265,7 +263,6 @@ async function getGooglePeople(token) {
 }
 
 async function changeStarEmail(token, emailId, isStarred) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const gmail = getGmailApi(auth);
   let result = [];
@@ -293,7 +290,6 @@ async function changeStarEmail(token, emailId, isStarred) {
 }
 
 async function trashEmail(token, emailId) {
-  const auth = createConnection();
   auth.setCredentials({ refresh_token: token });
   const gmail = getGmailApi(auth);
   const result = await gmail.users.messages.trash({
@@ -309,6 +305,30 @@ async function trashEmail(token, emailId) {
   return messageTrashed;
 }
 
+async function trashAllEmail(token, query) {
+  auth.setCredentials({ refresh_token: token });
+  const gmail = getGmailApi(auth);
+
+  const res = await gmail.users.messages.list({
+    userId: "me",
+    q: query,
+  });
+  const messages = res.data.messages;
+
+  if (messages) {
+    messages.forEach((message) => {
+      if (message) {
+        gmail.users.messages.trash({
+          userId: "me",
+          id: message.id,
+        });
+      }
+    });
+  }
+
+  return true;
+}
+
 export default {
   sendGmail,
   getGoogleAccountFromCode,
@@ -320,4 +340,5 @@ export default {
   getUserByEmail,
   changeStarEmail,
   trashEmail,
+  trashAllEmail,
 };

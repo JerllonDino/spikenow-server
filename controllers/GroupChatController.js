@@ -1,12 +1,13 @@
 import GroupChat from "../models/GroupChat";
-import GroupChatMember from "../models/GroupChatMember";
 
 class GroupChatController {
-  static async getGroupChats(userId) {
-    const inGroups = GroupChatMember({ memberID: userId }).exec();
-    const groups = inGroups.map((group) =>
-      GroupChat.find({ _id: group.groupID }).sort({ createdAt: -1 }).exec()
-    );
+  static async getGroupChats(email) {
+    const groups = await GroupChat.find({
+      $or: [
+        { members: { $elemMatch: { email: email } } },
+        { creatorEmail: email },
+      ],
+    }).exec();
     return groups;
   }
 
@@ -28,23 +29,9 @@ class GroupChatController {
     return GroupChat.findById(groupChatId).exec();
   }
 
-  static async addGroupChat({ groupChat, members }) {
+  static async addGroupChat(data) {
     const groupChat = new GroupChat(data);
-    members.forEach(({ userId, email }) => {
-      this.addMemberToGroup({ groupChatId: groupChat._id, userId, email });
-    });
-
     return groupChat.save();
-  }
-
-  static async addMemberToGroup({ groupChatId, userId, email }) {
-    const member = new GroupChatMember({
-      memberID: userId,
-      memberEmail: email,
-      groupID: groupChatId,
-    });
-
-    return member.save();
   }
 
   static async update(groupChatId, data) {
@@ -52,12 +39,11 @@ class GroupChatController {
   }
 
   static async remove(groupChatId) {
-    GroupChatMember.deleteMany({ groupID: groupChatId }).exec();
     return GroupChat.deleteOne({ _id: groupChatId }).exec();
   }
 
-  static async removeMember(memberID) {
-    GroupChatMember.deleteOne({ memberID }).exec();
+  static async removeMember(email) {
+    GroupChat.deleteOne({ members: { $elemMatch: { email: email } } }).exec();
   }
 }
 
