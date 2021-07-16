@@ -71,10 +71,7 @@ app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
 
 const io = socketIO(server, {
   cors: {
-    origins: [
-      "http://localhost:3000",
-      "https://spikenow-client.herokuapp.com/",
-    ],
+    origins: ["http://localhost:3000", "https://spikenowreplica.ml/"],
   },
 });
 websocket({ io });
