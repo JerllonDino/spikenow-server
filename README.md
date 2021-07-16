@@ -1,1 +1,1 @@
-# spikenow-client
+# spikenow-server
