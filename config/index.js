@@ -6,7 +6,7 @@ const config = {
   host: process.env.HOST,
   port: process.env.PORT,
   mongodb: {
-    url: process.env.MongoDBUrl,
+    url: process.env.MONGO_DB_URL,
   },
   googleCredentials: {
     clientId: process.env.GOOGLE_CLIENT_ID,
