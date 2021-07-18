@@ -3,21 +3,17 @@ import googleUtil from "../src/google-util";
 const event = ({ app }) => {
   // const user = new UserController(config.mongodb);
 
-  app.get("/getEvents/:startDate?", async (req, res, next) => {
+  app.get("/getEvents/:startDate/:endDate", async (req, res, next) => {
     try {
       console.log(req.params);
-      const date = req.params.startDate
-        ? new Date(JSON.parse(req.params.startDate)).toISOString()
-        : new Date().toISOString();
-      const endDate = new Date(date);
-      endDate.setHours(23);
-      endDate.setMinutes(59);
-      endDate.setSeconds(59);
+      const date = new Date(JSON.parse(req.params.startDate)).toISOString();
+
+      const endingDate = new Date(JSON.parse(req.params.endDate)).toISOString();
 
       const events = await googleUtil.getGoogleEvents(
         req.user.refresh_token,
         date,
-        endDate.toISOString()
+        endingDate
       );
       res.json(events);
     } catch (error) {
