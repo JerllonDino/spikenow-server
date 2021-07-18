@@ -153,7 +153,7 @@ async function getEmails(token, query = "", responseFormat = "metadata") {
   }
 
   const emails = await getEmails();
-  console.log(emails);
+  // console.log(emails);
 
   return emails;
 }

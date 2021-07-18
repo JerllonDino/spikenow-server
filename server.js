@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import socketIO from "socket.io";
 import websocket from "./routes/websocket";
 import routes from "./routes";
-import { ExpressPeerServer } from "peer";
+// import { ExpressPeerServer } from "peer";
 
 async function connectToMongoose() {
   return mongoose.connect(config.mongodb.url, {
@@ -67,7 +67,7 @@ app.get("/", (req, res, next) => {
   return res.send("This is the spikeNow replica server!");
 });
 
-app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
+// app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
 
 const io = socketIO(server, {
   cors: {
