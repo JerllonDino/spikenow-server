@@ -6,13 +6,14 @@ const auth = ({ app, config }) => {
   app.post("/google-auth", async (req, res, next) => {
     try {
       console.log(req.body.code);
-      const { id, email, full_name, refresh_token } =
+      const { id, email, full_name, refresh_token, picture } =
         await googleUtil.getGoogleAccountFromCode(req.body.code);
       const token = jwt.sign(
         {
           email,
           id,
           full_name,
+          picture,
           refresh_token,
         },
         "SpikeNowReplicaApi"
@@ -24,6 +25,7 @@ const auth = ({ app, config }) => {
         id,
         email,
         full_name,
+        picture,
       });
     } catch (error) {
       return next(error);
