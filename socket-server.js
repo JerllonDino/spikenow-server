@@ -1,13 +1,11 @@
 import http from "http";
-import express from "express";
 import socketIO from "socket.io";
 import dotenv from "dotenv";
 import websocket from "./routes/websocket";
 
 dotenv.config();
 
-const app = express();
-const server = http.createServer(app);
+const server = http.createServer();
 const port = process.env.SOCKET_PORT;
 
 const io = socketIO(server, {
