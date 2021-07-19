@@ -63,18 +63,19 @@ app.use((req, res, next) => {
   }
 });
 
-app.get("/", (req, res, next) => {
-  return res.send("This is the spikeNow replica server!");
-});
-
-// app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
-
 const io = socketIO(server, {
   cors: {
     origins: ["http://localhost:3000", "https://spikenowreplica.ml/"],
   },
   path: "/server",
 });
+
+app.get("/", (req, res, next) => {
+  return res.send("This is the spikeNow replica server!");
+});
+
+// app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
+
 websocket({ io });
 
 routes({ app, config });
