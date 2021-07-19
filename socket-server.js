@@ -9,7 +9,7 @@ const port = process.env.SOCKET_PORT;
 
 const io = socketIO(server, {
   cors: {
-    origins: ["http://localhost:3000", "https://spikenowreplica.ml/"],
+    origin: "*",
   },
   path: "/socketio",
 });
