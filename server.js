@@ -5,8 +5,7 @@ import cors from "cors";
 import jsonwebtoken from "jsonwebtoken";
 import config from "./config";
 import mongoose from "mongoose";
-import socketIO from "socket.io";
-import websocket from "./routes/websocket";
+
 import routes from "./routes";
 // import { ExpressPeerServer } from "peer";
 
@@ -63,20 +62,13 @@ app.use((req, res, next) => {
   }
 });
 
-const io = socketIO(server, {
-  cors: {
-    origins: ["http://localhost:3000", "https://spikenowreplica.ml/"],
-  },
-  path: "/socketio",
-});
-
 // app.get("/", (req, res, next) => {
 //   return res.send("This is the spikeNow replica server!");
 // });
 
 // app.use("/peerjs", ExpressPeerServer(server, { debug: true }));
 
-websocket({ io });
+// websocket({ io });
 
 routes({ app, config });
 
