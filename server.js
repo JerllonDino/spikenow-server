@@ -73,6 +73,7 @@ const io = socketIO(server, {
   cors: {
     origins: ["http://localhost:3000", "https://spikenowreplica.ml/"],
   },
+  path: "/server",
 });
 websocket({ io });
 
