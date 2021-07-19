@@ -1,7 +1,13 @@
 import googleUtil from "../src/google-util";
 
 const event = ({ app }) => {
-  // const user = new UserController(config.mongodb);
+  app.use((req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized user!" });
+    } else {
+      return next();
+    }
+  });
 
   app.get("/getEvents/:startDate/:endDate", async (req, res, next) => {
     try {

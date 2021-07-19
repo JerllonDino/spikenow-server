@@ -1,6 +1,13 @@
 import TodosController from "../controllers/TodosController";
 
 const todo = ({ app }) => {
+  app.use((req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized user!" });
+    } else {
+      return next();
+    }
+  });
   app.get("/getTodos/:userId", async (req, res, next) => {
     try {
       const result = await TodosController.getTodos(req.params.userId);

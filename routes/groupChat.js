@@ -2,6 +2,13 @@ import GroupChatController from "../controllers/GroupChatController";
 import googleUtil from "../src/google-util";
 
 const groupChat = ({ app }) => {
+  app.use((req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized user!" });
+    } else {
+      return next();
+    }
+  });
   app.get("/getGroupChat", async (req, res, next) => {
     try {
       const result = await GroupChatController.getGroupChats(req.user.email);

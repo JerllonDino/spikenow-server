@@ -30,25 +30,6 @@ const auth = ({ app, config }) => {
     }
   });
 
-  app.get("/getOtherContacts", async (req, res, next) => {
-    try {
-      const { data } = await googleUtil.getGooglePeople(req.user.refresh_token);
-      return res.json(data);
-    } catch (error) {
-      return next(error);
-    }
-  });
-
-  app.get("/getUser", async (req, res, next) => {
-    try {
-      const { data } = await googleUtil.getUserByEmail(req.user.refresh_token);
-      console.log(data);
-      return res.json(data);
-    } catch (error) {
-      return next(error);
-    }
-  });
-
   return app;
 };
 

@@ -1,10 +1,14 @@
 import googleUtil from "../src/google-util";
 
 const chat = ({ app }) => {
-  app.post("/email", async (req, res, next) => {
+  app.use((req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized user!" });
+    } else {
+      return next();
     }
+  });
+  app.post("/email", async (req, res, next) => {
     // console.log(req.body);
     const token = req.user.refresh_token;
     const subject = req.body.subject;
@@ -28,9 +32,6 @@ const chat = ({ app }) => {
   });
 
   app.get("/getEmails", async (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized user!" });
-    }
     try {
       const emails = await googleUtil.getEmails(
         req.user.refresh_token,
@@ -43,9 +44,6 @@ const chat = ({ app }) => {
   });
 
   app.get("/getMessages/:senderEmail", async (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized user!" });
-    }
     try {
       const query = `from:(${req.params.senderEmail}) OR to:(${req.params.senderEmail}) -spikenowreplica.group`;
       const emails = await googleUtil.getEmails(
@@ -61,9 +59,6 @@ const chat = ({ app }) => {
   });
 
   app.get("/getMessageGroup/:groupID", async (req, res, next) => {
-    if (!req.user) {
-      return res.status(401).json({ message: "Unauthorized user!" });
-    }
     try {
       const query = req.params.groupID;
       console.log(query);
@@ -114,6 +109,25 @@ const chat = ({ app }) => {
         query
       );
       res.json("Trashed!");
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.get("/getOtherContacts", async (req, res, next) => {
+    try {
+      const { data } = await googleUtil.getGooglePeople(req.user.refresh_token);
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  });
+
+  app.get("/getUser", async (req, res, next) => {
+    try {
+      const { data } = await googleUtil.getUserByEmail(req.user.refresh_token);
+      console.log(data);
+      return res.json(data);
     } catch (error) {
       return next(error);
     }
