@@ -7,7 +7,7 @@ const peer_host = process.env.PEERJS_HOST;
 const peer_port = process.env.PEERJS_PORT;
 
 const peerServer = PeerServer(
-  { port: peer_port, path: "/", secure: false, proxied: true },
+  { port: peer_port, path: "/peer", secure: false, proxied: true },
   () => console.log(`PeerJS Server running on port ${peer_port}`)
 );
 
