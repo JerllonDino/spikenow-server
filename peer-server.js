@@ -11,18 +11,8 @@ const peerServer = PeerServer(
   {
     port: peer_port,
     path: "/peer",
-    secure: true,
+    secure: false,
     proxied: true,
-    ssl: {
-      key: fs.readFileSync(
-        "/etc/letsencrypt/live/spikenowreplica.ml/privkey.pem",
-        "utf8"
-      ),
-      cert: fs.readFileSync(
-        "/etc/letsencrypt/live/spikenowreplica.ml/fullchain.pem",
-        "utf8"
-      ),
-    },
   },
   () => console.log(`PeerJS Server running on port ${peer_port}`)
 );
