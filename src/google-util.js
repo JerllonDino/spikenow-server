@@ -129,6 +129,7 @@ async function getEmails(token, query = "", responseFormat = "metadata") {
   const res = await gmail.users.messages.list({
     userId: "me",
     q: query,
+    maxResults: query ? 50 : 100,
   });
   const messages = res.data.messages;
 
