@@ -129,11 +129,10 @@ async function getEmails(token, query = "", responseFormat = "metadata") {
   const res = await gmail.users.messages.list({
     userId: "me",
     q: query,
-    maxResults: query ? 50 : 100,
   });
   const messages = res.data.messages;
 
-  const getEmails = async () => {
+  const getRealEmails = async () => {
     return Promise.all(
       messages.reduce(function (filtered, message) {
         if (message) {
@@ -153,7 +152,7 @@ async function getEmails(token, query = "", responseFormat = "metadata") {
     return "";
   }
 
-  const emails = await getEmails();
+  const emails = await getRealEmails();
   // console.log(emails);
 
   return emails;
