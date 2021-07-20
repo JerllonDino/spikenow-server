@@ -12,21 +12,22 @@ const peerServer = PeerServer(
     port: peer_port,
     path: "/peer",
     proxied: true,
-    config: {"iceServers": [
-      
-      {
-        "iceTransportPolicy": "relay",
-        "urls": "stun:stun.167.172.236.212:5349"
-      },
-      {
-        "iceTransportPolicy": "relay",
-        "urls": "turn:turn.167.172.236.212:5349",
-        "username": "batman",
-        "credential": "password"
-      }
-    ],
+    config: {
+      iceServers: [
+        {
+          iceTransportPolicy: "relay",
+          urls: "stun:stun.167.172.236.212:5349",
+        },
+        {
+          iceTransportPolicy: "relay",
+          urls: "turn:turn.167.172.236.212:5349",
+          username: "batman",
+          credential: "password",
+        },
+      ],
+    },
   },
-  
+
   () => console.log(`PeerJS Server running on port ${peer_port}`)
 );
 
