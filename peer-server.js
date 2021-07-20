@@ -1,3 +1,4 @@
+import fs from "fs";
 import { PeerServer } from "peer";
 import dotenv from "dotenv";
 
