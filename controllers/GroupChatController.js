@@ -35,7 +35,9 @@ class GroupChatController {
   }
 
   static async update(groupChatId, data) {
-    return GroupChat.findByIdAndUpdate(groupChatId, data).exec();
+    return GroupChat.findByIdAndUpdate(groupChatId, data, {
+      returnOriginal: false,
+    }).exec();
   }
 
   static async remove(groupChatId) {

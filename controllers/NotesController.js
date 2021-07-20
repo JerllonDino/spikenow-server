@@ -29,7 +29,9 @@ class NoteController {
   }
 
   static async update(noteId, data) {
-    return NoteModel.findByIdAndUpdate(noteId, data).exec();
+    return NoteModel.findByIdAndUpdate(noteId, data, {
+      returnOriginal: false,
+    }).exec();
   }
 
   static async remove(noteId) {

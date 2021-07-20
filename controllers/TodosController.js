@@ -29,7 +29,9 @@ class TodosController {
   }
 
   static async update(todoId, data) {
-    return TodoModel.findByIdAndUpdate(todoId, data).exec();
+    return TodoModel.findByIdAndUpdate(todoId, data, {
+      returnOriginal: false,
+    }).exec();
   }
 
   static async remove(todoId) {

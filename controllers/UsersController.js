@@ -19,7 +19,9 @@ class UserController {
   }
 
   static async update(userId, data) {
-    return UserModel.findOneAndUpdate({ gId: userId }, data).exec();
+    return UserModel.findOneAndUpdate({ gId: userId }, data, {
+      returnOriginal: false,
+    }).exec();
   }
 
   static async remove(userId) {
