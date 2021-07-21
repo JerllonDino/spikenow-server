@@ -1,4 +1,3 @@
-import fs from "fs";
 import { PeerServer } from "peer";
 import dotenv from "dotenv";
 
@@ -16,11 +15,11 @@ const peerServer = PeerServer(
       iceServers: [
         {
           iceTransportPolicy: "relay",
-          urls: "stun:stun.167.172.236.212:5349",
+          urls: "stun:stun.l.google.com:19302",
         },
         {
           iceTransportPolicy: "relay",
-          urls: "turn:turn.167.172.236.212:5349",
+          urls: "turn:turn.spikenowreplica.ml:5439",
           username: "batman",
           credential: "password",
         },
