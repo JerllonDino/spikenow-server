@@ -7,7 +7,8 @@
     "start": "nodemon ./server.js --exec babel-node -e js node -r",
     "dev": "babel-node server.js",
     "startPeer": "babel-node peer-server.js",
-    "startSocket": "babel-node socket-server.js"
+    "startSocket": "babel-node socket-server.js",
+    "startTurn": "babel-node turn-server.js"
   },
   "keywords": [],
   "author": "Jerllon Dino",
