@@ -5,3 +5,9 @@
 - Made with `React`, `Node JS`, `Express`, `SocketIO`, `WebRTC`, [Google API](https://www.npmjs.com/package/googleapis) and `MongoDB`
 ### People Involved: `1`
 ###### Created at July 2021
+
+# Start Application
+- Run `npm start` to start main express server
+- Run `npm run startSocket` to start socketIO server
+- Run `npm run startPeer` to start PeerJS server
+- Run `npm run startTurn` to start Turn server
